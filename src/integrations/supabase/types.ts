@@ -7,17 +7,142 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
-  }
   public: {
     Tables: {
-      [_ in never]: never
+      players: {
+        Row: {
+          id: string
+          name: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      matches: {
+        Row: {
+          id: string
+          player1_id: string | null
+          player2_id: string | null
+          current_level: number
+          player1_score: number
+          player2_score: number
+          game_state: string
+          created_at: string
+          updated_at: string
+          completed_at: string | null
+        }
+        Insert: {
+          id: string
+          player1_id?: string | null
+          player2_id?: string | null
+          current_level?: number
+          player1_score?: number
+          player2_score?: number
+          game_state?: string
+          created_at?: string
+          updated_at?: string
+          completed_at?: string | null
+        }
+        Update: {
+          id?: string
+          player1_id?: string | null
+          player2_id?: string | null
+          current_level?: number
+          player1_score?: number
+          player2_score?: number
+          game_state?: string
+          created_at?: string
+          updated_at?: string
+          completed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matches_player1_id_fkey"
+            columns: ["player1_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_player2_id_fkey"
+            columns: ["player2_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      level_results: {
+        Row: {
+          id: string
+          match_id: string
+          level: number
+          winner_id: string | null
+          time_seconds: number
+          gates_opened: number
+          completed_at: string
+        }
+        Insert: {
+          id?: string
+          match_id: string
+          level: number
+          winner_id?: string | null
+          time_seconds: number
+          gates_opened: number
+          completed_at?: string
+        }
+        Update: {
+          id?: string
+          match_id?: string
+          level?: number
+          winner_id?: string | null
+          time_seconds?: number
+          gates_opened?: number
+          completed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "level_results_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "level_results_winner_id_fkey"
+            columns: ["winner_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
-      [_ in never]: never
+      leaderboard: {
+        Row: {
+          id: string | null
+          name: string | null
+          total_matches: number | null
+          total_wins: number | null
+          avg_time: number | null
+          best_time: number | null
+          total_gates_opened: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
